@@ -45,12 +45,12 @@ INCLUDES	:=	include
 ROMFS		:=	romfs
 
 APP_TITLE	:=	Isotope Updater
-APP_AUTHOR	:=	FennecTECH,Nichole Mattera
+APP_AUTHOR	:=	Nichole Mattera, Ta180m
 
-APP_VERSION 		:= 4.2.1
-APP_VERSION_MAJOR	:= 4
+APP_VERSION 		:= 1.2
+APP_VERSION_MAJOR	:= 1
 APP_VERSION_MINOR	:= 2
-APP_VERSION_PATCH	:= 1
+# APP_VERSION_PATCH	:= 0
 
 SETTING_CONFIG_VERSION	:= 2
 INTERNAL_CONFIG_VERSION	:= 2
@@ -64,7 +64,6 @@ DEFINES		+=	-D__SWITCH__ \
 				-DVERSION=\"$(APP_VERSION)\" \
 				-DVERSION_MAJOR=$(APP_VERSION_MAJOR) \
 				-DVERSION_MINOR=$(APP_VERSION_MINOR) \
-				-DVERSION_PATCH=$(APP_VERSION_PATCH) \
 				-DSETTING_CONFIG_VERSION=$(SETTING_CONFIG_VERSION) \
 				-DINTERNAL_CONFIG_VERSION=$(INTERNAL_CONFIG_VERSION)
 
@@ -78,8 +77,9 @@ LDFLAGS		=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) \
 				-Wl,-Map,$(notdir $*.map)
 
 LIBS		:=	-lSDL2_ttf -lSDL2_image -lSDL2_gfx -lfreetype -lwebp -lpng -ljpeg \
-				-ljansson -lSwurl -lcurl -lz -lSimpleIniParser -lminizip -lconfig \
-				-lnx `sdl2-config --libs` `freetype-config --libs`
+				-ljansson -lSwurl -lcurl -lz -lmbedtls -lmbedcrypto -lmbedx509 \
+				-lSimpleIniParser -lminizip -lconfig -lnx `sdl2-config --libs` \
+				`freetype-config --libs`
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -178,7 +178,6 @@ endif
 .PHONY: $(BUILD) clean all
 
 #---------------------------------------------------------------------------------
-
 all: $(BUILD)
 
 $(BUILD):
@@ -201,6 +200,8 @@ ifeq ($(strip $(APP_JSON)),)
 else
 	@rm -fr $(BUILD) $(TARGET).nsp $(TARGET).nso $(TARGET).npdm $(TARGET).elf
 endif
+
+
 #---------------------------------------------------------------------------------
 else
 .PHONY:	all

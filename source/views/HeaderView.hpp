@@ -20,8 +20,8 @@
 #include "TextView.hpp"
 #include "../View.hpp"
 
-namespace dsu::views {
-    class HeaderView : public dsu::View {
+namespace ku::views {
+    class HeaderView : public ku::View {
         public:
             HeaderView(std::string title, bool showIcon);
             ~HeaderView();

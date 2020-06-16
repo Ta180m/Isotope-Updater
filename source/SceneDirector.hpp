@@ -26,7 +26,7 @@
 #include "scenes/PackageDownloadScene.hpp"
 #include "scenes/PackageSelectScene.hpp"
 
-namespace dsu {
+namespace ku {
     typedef enum {
         SCENE_EXFAT_WARNING,
         SCENE_APP_UPDATE,

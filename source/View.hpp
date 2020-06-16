@@ -20,7 +20,7 @@
 #include <list>
 #include <SDL2/SDL.h>
 
-namespace dsu {
+namespace ku {
     class View {
         public:
             SDL_Rect frame;

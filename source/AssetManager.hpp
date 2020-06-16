@@ -23,7 +23,7 @@
 #include <string>
 #include <switch.h>
 
-namespace dsu {
+namespace ku {
     class AssetManager {
         public:
             /* Textures */

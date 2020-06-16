@@ -21,8 +21,8 @@
 
 using namespace std;
 
-namespace dsu::views {
-    class ImageView : public dsu::View {
+namespace ku::views {
+    class ImageView : public ku::View {
         public:
             ImageView(SDL_Texture * image);
             ~ImageView(){};

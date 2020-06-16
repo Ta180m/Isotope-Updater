@@ -22,16 +22,16 @@
 #include "../models/Action.hpp"
 #include "../View.hpp"
 
-namespace dsu::views {
-    class FooterView : public dsu::View {
+namespace ku::views {
+    class FooterView : public ku::View {
         public:
-            std::list<dsu::models::Action *> actions;
+            std::list<ku::models::Action *> actions;
 
             FooterView();
             ~FooterView();
             void render(SDL_Rect rect, double dTime);
 
         private:
-            void _renderButton(dsu::models::ActionButton button, SDL_Texture * texture, SDL_Rect frame);
+            void _renderButton(ku::models::ActionButton button, SDL_Texture * texture, SDL_Rect frame);
     };
 }

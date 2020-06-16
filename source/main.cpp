@@ -20,21 +20,22 @@
 #include <switch.h>
 #include <Swurl.hpp>
 
-#include "FileManager.hpp"
 #include "AssetManager.hpp"
 #include "ConfigManager.hpp"
 #include "SceneDirector.hpp"
 
-using namespace dsu;
+using namespace ku;
 using namespace std;
 using namespace swurl;
 
 int main(int argc, char **argv)
 {
     SessionManager::initialize();
-    SessionManager::userAgent = string("Isotope-updater/") + VERSION;
+    SessionManager::userAgent = string("isotope-updater/") + VERSION;
 
-    nxlinkStdio();
+    #ifdef DEBUG
+        nxlinkStdio();
+    #endif
 
     ConfigManager::initialize();
 

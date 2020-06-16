@@ -19,10 +19,10 @@
 
 #include "../AssetManager.hpp"
 
-using namespace dsu;
+using namespace ku;
 using namespace std;
 
-namespace dsu::views {
+namespace ku::views {
     UpdateView::UpdateView(string text) : View() {
         frame = { 0, 0, 1280, 325 };
 

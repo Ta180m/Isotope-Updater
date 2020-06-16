@@ -22,7 +22,7 @@
 #include "ControlView.hpp"
 #include "TextView.hpp"
 
-namespace dsu::views {
+namespace ku::views {
     class AlertButtonView : public ControlView {
         public:
             bool isLast;

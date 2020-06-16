@@ -23,7 +23,7 @@
 
 #include "../View.hpp"
 
-namespace dsu::views {
+namespace ku::views {
     typedef enum {
         LEFT_ALIGN,
         CENTER_ALIGN,
@@ -37,7 +37,7 @@ namespace dsu::views {
             int textHeight;
     };
 
-    class TextView : public dsu::View {
+    class TextView : public ku::View {
         public:
             TTF_Font * font;
             std::string text;

@@ -20,10 +20,10 @@
 #include "../AssetManager.hpp"
 #include "../SceneDirector.hpp"
 
-using namespace dsu;
-using namespace dsu::models;
+using namespace ku;
+using namespace ku::models;
 
-namespace dsu::views {
+namespace ku::views {
     FooterView::FooterView() : View() {
         isFocusable = false;
         isTouchable = false;

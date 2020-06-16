@@ -17,7 +17,7 @@
 
 #pragma once
 
-namespace dsu::models {
+namespace ku::models {
     class Touch {
     };
 }

@@ -22,10 +22,10 @@
 #include "../AssetManager.hpp"
 #include "../SceneDirector.hpp"
 
-using namespace dsu;
+using namespace ku;
 using namespace std;
 
-namespace dsu::views {
+namespace ku::views {
     AlertView::AlertView(string title, string message, vector<string> buttons) {
         _focusSelection = 0;
         _alertHeight = 203;

@@ -15,7 +15,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#include <cstring>
 #include <jansson.h>
 #include <SimpleIniParser.hpp>
 
@@ -25,21 +24,15 @@
 #include "../FileManager.hpp"
 #include "../SceneDirector.hpp"
 
-#define IRAM_PAYLOAD_MAX_SIZE 0x2F000
-#define IRAM_PAYLOAD_BASE 0x40010000
-
-static __attribute__((aligned(0x1000))) u8 g_ff_page[0x1000];
-static __attribute__((aligned(0x1000))) u8 g_work_page[0x1000];
-
-using namespace dsu;
-using namespace dsu::models;
-using namespace dsu::views;
+using namespace ku;
+using namespace ku::models;
+using namespace ku::views;
 using namespace simpleIniParser;
 using namespace std;
 using namespace std::placeholders;
 using namespace swurl;
 
-namespace dsu::scenes {
+namespace ku::scenes {
     PackageDownloadScene::PackageDownloadScene() {
         SessionManager::onProgressChanged = bind(&PackageDownloadScene::_onProgressUpdate, this, _1, _2);
         SessionManager::onCompleted = bind(&PackageDownloadScene::_onCompleted, this, _1);
@@ -87,11 +80,11 @@ namespace dsu::scenes {
         if (_footerView != NULL)
             delete _footerView;
 
-        if (_IsotopeUrlRequest != NULL)
-            delete _IsotopeUrlRequest;
+        if (_isotopeUrlRequest != NULL)
+            delete _isotopeUrlRequest;
 
-        if (_IsotopeRequest != NULL)
-            delete _IsotopeRequest;
+        if (_isotopeRequest != NULL)
+            delete _isotopeRequest;
 
         bpcExit();
     }
@@ -108,33 +101,12 @@ namespace dsu::scenes {
     }
 
     void PackageDownloadScene::render(SDL_Rect rect, double dTime) {
-        if (_IsotopeUrlRequest == NULL) {
-            _IsotopeUrlRequest = new WebRequest("https://api.github.com/repos/Ta180m/Isotope/releases");
-            SessionManager::makeRequest(_IsotopeUrlRequest);
+        if (_isotopeUrlRequest == NULL) {
+            _isotopeUrlRequest = new WebRequest("http://api.github.com/repos/Ta180m/Isotope/releases");
+            SessionManager::makeRequest(_isotopeUrlRequest);
         }
 
         Scene::render(rect, dTime);
-    }
-
-    void PackageDownloadScene::_copyToIram(uintptr_t iram_addr, void *buf, size_t size) {
-        memcpy(g_work_page, buf, size);
-        
-        SecmonArgs args = {0};
-        args.X[0] = 0xF0000201;             /* smcAmsIramCopy */
-        args.X[1] = (uintptr_t)g_work_page; /* DRAM Address */
-        args.X[2] = iram_addr;              /* IRAM Address */
-        args.X[3] = size;                   /* Copy size */
-        args.X[4] = 1;
-        svcCallSecureMonitor(&args);
-        
-        memcpy(buf, g_work_page, size);
-    }
-
-    void PackageDownloadScene::_clearIram() {
-        memset(g_ff_page, 0xFF, sizeof(g_ff_page));
-        for(size_t i = 0; i < IRAM_PAYLOAD_MAX_SIZE; i += sizeof(g_ff_page)) {
-            this->_copyToIram(IRAM_PAYLOAD_BASE + i, g_ff_page, sizeof(g_ff_page));
-        }
     }
 
     void PackageDownloadScene::_showStatus(string text, string subtext, bool wasSuccessful) {
@@ -153,26 +125,7 @@ namespace dsu::scenes {
     void PackageDownloadScene::_onAlertViewDismiss(ModalView * view, bool success) {
         if (success) {
             if (_restartAlertView->getSelectedOption() == 0) {
-                auto payload = FileManager::readFile("sdmc:/bootloader/update.bin");
-                if (payload.size() == 0) {
-                    SceneDirector::exitApp = true;
-                    return;
-                }
-
-                Result rc = splInitialize();
-                if (R_FAILED(rc)) {
-                    SceneDirector::exitApp = true;
-                    return;
-                }
-
-                this->_clearIram();
-
-                for (size_t i = 0; i < IRAM_PAYLOAD_MAX_SIZE; i += 0x1000) {
-                    this->_copyToIram(IRAM_PAYLOAD_BASE + i, &payload[i], 0x1000);
-                }
-
-                splSetConfig((SplConfigItem) 65001, 2);
-                splExit();
+                bpcRebootSystem();
             }
             else {
                 SceneDirector::exitApp = true;
@@ -186,37 +139,37 @@ namespace dsu::scenes {
     }
 
     void PackageDownloadScene::_onCompleted(WebRequest * request) {
-        if (request == _IsotopeUrlRequest) {
+        if (request == _isotopeUrlRequest) {
             json_t * root = json_loads(request->response.rawResponseBody.c_str(), 0, NULL);
             if (!root || !json_is_array(root) || json_array_size(root) < 1) {
                 if (root) {
                     json_decref(root);
                 }
 
-                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.[7]", false);
+                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.", false);
                 return;
             }
 
             json_t * release = json_array_get(root, 0);
             if (!release || !json_is_object(release)) {
                 json_decref(root);
-                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.[8]", false);
+                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.", false);
                 return;
             }
 
             json_t * tagName = json_object_get(release, "tag_name");
             if (!tagName || !json_is_string(tagName)) {
                 json_decref(root);
-                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.[9]", false);
+                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.", false);
                 return;
             }
 
-            _IsotopeVersion = json_string_value(tagName);
+            _isotopeVersion = json_string_value(tagName);
 
             json_t * assets = json_object_get(release, "assets");
             if (!assets || !json_is_array(assets) || json_array_size(assets) < 1) {
                 json_decref(root);
-                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.[10]", false);
+                _showStatus("Unable to parse response from GitHub API.", "Please restart the app to try again.", false);
                 return;
             }
 
@@ -233,7 +186,7 @@ namespace dsu::scenes {
                 }
 
                 std::string assetName(json_string_value(name));
-                if (assetName.compare(0, 8, "isotope_") != 0 || assetName.compare(assetName.length() - 4, 4, ".zip") != 0) {
+                if (assetName.compare(0, 6, "Isotope") != 0 || assetName.compare(assetName.length() - 4, 4, ".zip") != 0) {
                     continue;
                 }
 
@@ -253,8 +206,8 @@ namespace dsu::scenes {
                 return;
             }
 
-            _IsotopeRequest = new WebRequest(downloadUrl);
-            SessionManager::makeRequest(_IsotopeRequest);
+            _isotopeRequest = new WebRequest(downloadUrl);
+            SessionManager::makeRequest(_isotopeRequest);
         } else {
             FileManager::writeFile("temp.zip", request->response.rawResponseBody);
 
@@ -274,14 +227,14 @@ namespace dsu::scenes {
             }
 
             FileManager::deleteFile("temp.zip");
-            ConfigManager::setCurrentVersion(_IsotopeVersion);
+            ConfigManager::setCurrentVersion(_isotopeVersion);
 
             _updateView->setText("Applying disabled game cart option...");
             SceneDirector::currentSceneDirector->render();
 
             FileManager::applyNoGC();
 
-            _showStatus("Isotope has been updated to version " + _IsotopeVersion + "!", "Please restart your Switch to finish the update.", true);
+            _showStatus("Isotope has been updated to version " + _isotopeVersion + "!", "Please restart your Switch to finish the update.", true);
         }
     }
 

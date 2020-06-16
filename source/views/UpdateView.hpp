@@ -24,8 +24,8 @@
 #include "TextView.hpp"
 #include "../View.hpp"
 
-namespace dsu::views {
-    class UpdateView : public dsu::View {
+namespace ku::views {
+    class UpdateView : public ku::View {
         public:
             UpdateView(std::string text);
             ~UpdateView();

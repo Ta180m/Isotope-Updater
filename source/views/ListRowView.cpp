@@ -22,10 +22,10 @@
 #include "../AssetManager.hpp"
 #include "../SceneDirector.hpp"
 
-using namespace dsu;
+using namespace ku;
 using namespace std;
 
-namespace dsu::views {
+namespace ku::views {
     ListRowView::ListRowView(string primaryText, string secondaryText, ListRowStyle style) : ControlView() {
         isLast = false;
         hasCheckmark = false;

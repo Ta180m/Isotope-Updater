@@ -19,7 +19,7 @@
 
 using namespace std;
 
-namespace dsu::models {
+namespace ku::models {
     Action::Action(ActionButton actionButton, string actionText) {
         button = actionButton;
         text = actionText;

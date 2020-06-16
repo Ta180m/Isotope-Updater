@@ -19,7 +19,7 @@
 
 using namespace std;
 
-namespace dsu {
+namespace ku {
     void ConfigManager::initialize() {
         config_init(&_cfg);
         config_init(&_internalDb);
@@ -36,8 +36,8 @@ namespace dsu {
             setting = config_setting_add(root, RECEIVED_EXFAT_WARNING_KEY.c_str(), CONFIG_TYPE_BOOL);
             config_setting_set_bool(setting, RECEIVED_EXFAT_WARNING_DEF);
 
-            // setting = config_setting_add(root, RECEIVED_IGNORE_CONFIG_WARNING_KEY.c_str(), CONFIG_TYPE_BOOL);
-            // config_setting_set_bool(setting, RECEIVED_IGNORE_CONFIG_WARNING_DEF);
+            setting = config_setting_add(root, RECEIVED_IGNORE_CONFIG_WARNING_KEY.c_str(), CONFIG_TYPE_BOOL);
+            config_setting_set_bool(setting, RECEIVED_IGNORE_CONFIG_WARNING_DEF);
 
             setting = config_setting_add(root, IGNORE_CONFIG_FILES_KEY.c_str(), CONFIG_TYPE_BOOL);
             config_setting_set_bool(setting, IGNORE_CONFIG_FILES_DEF);
@@ -116,9 +116,11 @@ namespace dsu {
         return _readInt(CONFIG_VERSION_KEY, CONFIG_VERSION_DEF, _cfg);
     }
 
+
     bool ConfigManager::setFilesToIgnore(vector<string> files) {
         return _appendArrayOfStrings(IGNORE_KEY, files, _cfg, CONFIG_FILENAME);
     }
+
 
     string ConfigManager::getCurrentVersion() {
         return _readString(VERSION_KEY, VERSION_DEF, _internalDb);
@@ -133,9 +135,9 @@ namespace dsu {
         return _readBoolean(RECEIVED_EXFAT_WARNING_KEY, RECEIVED_EXFAT_WARNING_DEF, _internalDb);
     }
 
-    // bool ConfigManager::getReceivedIgnoreConfigWarning() {
-    //     return _readBoolean(RECEIVED_IGNORE_CONFIG_WARNING_KEY, RECEIVED_IGNORE_CONFIG_WARNING_DEF, _internalDb);
-    // }
+    bool ConfigManager::getReceivedIgnoreConfigWarning() {
+        return _readBoolean(RECEIVED_IGNORE_CONFIG_WARNING_KEY, RECEIVED_IGNORE_CONFIG_WARNING_DEF, _internalDb);
+    }
 
     bool ConfigManager::getIgnoreConfigFiles() {
         return _readBoolean(IGNORE_CONFIG_FILES_KEY, IGNORE_CONFIG_FILES_DEF, _internalDb);
@@ -144,6 +146,7 @@ namespace dsu {
     int ConfigManager::getInternalConfigVersion() {
         return _readInt(CONFIG_VERSION_KEY, CONFIG_VERSION_DEF, _internalDb);
     }
+
 
     bool ConfigManager::setCurrentVersion(string version) {
         return _writeString(VERSION_KEY, version, _internalDb, INTERNAL_FILENAME);
@@ -157,9 +160,9 @@ namespace dsu {
         return _writeBoolean(RECEIVED_EXFAT_WARNING_KEY, received, _internalDb, INTERNAL_FILENAME);
     }
 
-    // bool ConfigManager::setReceivedIgnoreConfigWarning(bool received) {
-    //     return _writeBoolean(RECEIVED_IGNORE_CONFIG_WARNING_KEY, received, _internalDb, INTERNAL_FILENAME);
-    // }
+    bool ConfigManager::setReceivedIgnoreConfigWarning(bool received) {
+        return _writeBoolean(RECEIVED_IGNORE_CONFIG_WARNING_KEY, received, _internalDb, INTERNAL_FILENAME);
+    }
 
     bool ConfigManager::setIgnoreConfigFiles(bool ignore) {
         return _writeBoolean(IGNORE_CONFIG_FILES_KEY, ignore, _internalDb, INTERNAL_FILENAME);

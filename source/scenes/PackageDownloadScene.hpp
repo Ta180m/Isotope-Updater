@@ -28,8 +28,8 @@
 #include "../views/StatusView.hpp"
 #include "../views/UpdateView.hpp"
 
-namespace dsu::scenes {
-    class PackageDownloadScene : public dsu::Scene {
+namespace ku::scenes {
+    class PackageDownloadScene : public ku::Scene {
         public:
             PackageDownloadScene();
             ~PackageDownloadScene();
@@ -38,22 +38,19 @@ namespace dsu::scenes {
             void render(SDL_Rect rect, double dTime);
 
         private:
-            dsu::views::HeaderView * _headerView = NULL;
-            dsu::views::UpdateView * _updateView = NULL;
-            dsu::views::StatusView * _statusView = NULL;
-            dsu::views::FooterView * _footerView = NULL;
-            dsu::views::AlertView * _restartAlertView = NULL;
+            ku::views::HeaderView * _headerView = NULL;
+            ku::views::UpdateView * _updateView = NULL;
+            ku::views::StatusView * _statusView = NULL;
+            ku::views::FooterView * _footerView = NULL;
+            ku::views::AlertView * _restartAlertView = NULL;
 
-            std::string _IsotopeVersion = "";
+            std::string _isotopeVersion = "";
 
-            swurl::WebRequest * _IsotopeUrlRequest = NULL;
-            swurl::WebRequest * _IsotopeRequest = NULL;
-
-            void _copyToIram(uintptr_t iram_addr, void *buf, size_t size);
-            void _clearIram();
+            swurl::WebRequest * _isotopeUrlRequest = NULL;
+            swurl::WebRequest * _isotopeRequest = NULL;
 
             void _showStatus(std::string text, std::string subtext, bool wasSuccessful);
-            void _onAlertViewDismiss(dsu::ModalView * view, bool success);
+            void _onAlertViewDismiss(ku::ModalView * view, bool success);
             std::string _getVersionNumber(std::string version);
 
             void _onProgressUpdate(swurl::WebRequest * request, double progress);

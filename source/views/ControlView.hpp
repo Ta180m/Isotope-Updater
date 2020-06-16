@@ -21,8 +21,8 @@
 
 #include "../View.hpp"
 
-namespace dsu::views {
-    class ControlView : public dsu::View {
+namespace ku::views {
+    class ControlView : public ku::View {
         protected:
             double _timeElapsed;
             

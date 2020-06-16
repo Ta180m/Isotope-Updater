@@ -24,8 +24,8 @@
 
 using namespace std;
 
-namespace dsu::views {
-    class StatusView : public dsu::View {
+namespace ku::views {
+    class StatusView : public ku::View {
         public:
             StatusView(std::string text, std::string subtext);
             ~StatusView();
